@@ -1480,14 +1480,16 @@
 
             created() {
                 let inventories = {};
-                
-                if (Array.isArray(this.variant.inventories)) {
-                    this.variant.inventories.forEach((inventory) => {
-                        inventories[inventory.inventory_source_id] = inventory.qty;
-                    });
 
-                    this.variant.inventories = inventories; 
-                }
+                this.inventorySources.forEach((source) => {
+                    const inventory = Array.isArray(this.variant.inventories)
+                        ? this.variant.inventories.find(inventory => inventory.inventory_source_id === source.id)
+                        : null;
+
+                    inventories[source.id] = inventory ? (inventory.qty || 0) : 0;
+                });
+
+                this.variant.inventories = inventories;
             },
 
             mounted() {
